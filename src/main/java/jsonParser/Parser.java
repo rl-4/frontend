@@ -2,6 +2,7 @@ package jsonParser;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import model.DocumentMetaDataDtoWrapper;
 import model.FilterQuery;
 
 public class Parser {
@@ -15,5 +16,9 @@ public class Parser {
 
     public FilterQuery jsonToFilterQuery(String json) throws JsonProcessingException {
         return objectMapper.readValue(json, FilterQuery.class);
+    }
+
+    public DocumentMetaDataDtoWrapper jsonToDocumentMetaDataDto(String json) throws JsonProcessingException {
+        return objectMapper.readValue(json, DocumentMetaDataDtoWrapper.class);
     }
 }

@@ -1,27 +1,32 @@
 package view;
 
-import model.Document;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class SearchForm {
-    private String searchInput;
-    private List<Document> results = new ArrayList<>();
 
-    public List<Document> getResults() {
-        return results;
+    private String searchQuery;
+
+    private boolean regExMatch;
+
+    public SearchForm(String searchQuery, boolean regExMatch) {
+        this.searchQuery = searchQuery;
+        this.regExMatch = regExMatch;
     }
 
-    public void setResults(List<Document> results) {
-        this.results = results;
+    public SearchForm() {
     }
 
-    public String getSearchInput() {
-        return searchInput;
+    public String getSearchQuery() {
+        return searchQuery;
     }
 
-    public void setSearchInput(String searchInput) {
-        this.searchInput = searchInput;
+    public void setSearchQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
+    }
+
+    public boolean isRegExMatch() {
+        return regExMatch;
+    }
+
+    public void setRegExMatch(boolean regExMatch) {
+        this.regExMatch = regExMatch;
     }
 }
