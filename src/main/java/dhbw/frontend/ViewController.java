@@ -35,8 +35,7 @@ public class ViewController {
             FilterQuery filterQuery = new FilterQuery(searchForm.isRegExMatch(), searchForm.getSearchQuery(), keyValuePairs);
             String jsonFilterQuery = parser.filterQueryToJson(filterQuery);
 
-            //TODO change localhost
-            URI uri = new URI("http://localhost:8080/fullTextSearch");
+            URI uri = new URI("http://app:8080/fullTextSearch");
             HttpResponse<String> response = httpSearch.searchPost(uri, jsonFilterQuery);
             String responseJson = response.body();
             DocumentMetaDataDtoWrapper documentMetaDataDtoWrapper = parser.jsonToDocumentMetaDataDto(responseJson);
@@ -63,8 +62,7 @@ public class ViewController {
     @PostMapping("/upload")
     public String uploadDocument(){
         try{
-            //TODO uri correct?
-            URI uri = new URI("http://fileservice:8080/api/addDocument");
+            URI uri = new URI("http://fileservice:8081/api/addDocument");
         }catch (Exception e){
             e.printStackTrace();
         }
