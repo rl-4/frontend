@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Document archive</h1>
+
+    <form action="#" th:action="@{/}" method="get">
+        <input type="text" name="key" placeholder="Key">
+        <input type="text" name="value" placeholder="Value">
+        <button type="submit">Add Key-Value-Pair</button>
+    </form>
+
+    <form action="#" th:action="@{/search}" th:object="${searchForm}" method="post">
+        <input type="text" th:field="*{searchQuery}" placeholder="Search">
+        <input type="checkbox" th:field="*{regExMatch}" checked="false">
+        <button type="submit">Search</button>
+    </form>
+
+    <div>
+        <div th:each="documentMetaData, stats : ${documentMetaDataDTOs}">
+            <p th:text="${documentMetaData.name}"></p>
+            <ul>
+                <li th:each="key: documentMetaData.metaData.keySet()">
+                    <span th:text="${key}"></span> : <span th:text="${documentMetaData.metaData.get(key)}"></span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
