@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <title>Dokumentenarchiv</title>
+</head>
+<style>
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+</style>
+<body th:object="${searchForm}">
+<nav class="navbar navbar-light bg-light">
+    <span class="navbar-brand mb-0 h1">Dokumentenarchiv</span>
+    <a href="/upload" class="float-right">Dateien hochladen</a>
+    <a href="/download" class="float-right">Datei downloaden</a>
+</nav>
+<form th:action="@{/search}" class="container" method="POST">
+    <div class="row">
+        <div class="input-group mb-3">
+            <input type="text" id="searchInput" th:field="*{searchInput}" class="form-control" placeholder="Suche"
+                   aria-label="Dokumentensuche" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit" id="submitButton" th:value="Search">Suchen
+                </button>
+            </div>
+        </div>
+    </div>
+    <div>
+
+        <INPUT TYPE="checkbox" NAME="documentSearch" VALUE="dS" checked> Suche nach Name
+        <INPUT TYPE="checkbox" ID="text" NAME="textSearch" VALUE="tS"> Volltextsuche
+        <INPUT TYPE="checkbox" ID="string3" NAME="stringSearch" VALUE="sS"> Teilsuche
+        <INPUT TYPE="checkbox" ID="string2" NAME="stringSearch" VALUE="sS"> Suche nach Autor
+        <INPUT TYPE="checkbox" ID="string4" NAME="stringSearch" VALUE="sS"> Suche nach Erstelldatum
+        <INPUT TYPE="checkbox" ID="string5" NAME="stringSearch" VALUE="sS"> Suche nach Größe
+    </div>
+</form>
+
+<div>
+
+</div>
+<th:block th:if="*{results.size() != 0}">
+    <div class="container">
+        <div class="row">
+            <table border="1" class=center style="width:1150px">
+                <tr>
+                    <th width="20px"></th>
+                    <th>Name</th>
+                    <th>Author</th>
+                    <th>Größe</th>
+                </tr>
+                <tr th:each="document : *{results}">
+                    <td><input type="checkbox" name="document" value="download"></td>
+                    <td th:utext="${document.name}">...</td>
+                    <td th:utext="${document.author}">...</td>
+                    <td th:utext="${document.size}">...</td>
+                </tr>
+                <tr th:each="document : *{results}">
+                    <td><input type="checkbox" name="document" value="download"></td>
+                    <td th:utext="${document.name}">...</td>
+                    <td th:utext="${document.author}">...</td>
+                    <td th:utext="${document.size}">...</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
