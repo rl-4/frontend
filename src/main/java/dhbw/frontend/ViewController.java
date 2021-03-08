@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import services.HttpSearch;
 import view.SearchForm;
 
@@ -28,6 +29,7 @@ public class ViewController {
 
     @PostMapping("/search")
     public String fullTextSearch(@ModelAttribute SearchForm searchForm, Model model) {
+        keyValuePairs.clear();
         List<DocumentMetaDataDto> documentMetaDataDTOs = null;
         try {
             FilterQuery filterQuery = new FilterQuery(searchForm.isRegExMatch(), searchForm.getSearchQuery(), searchForm.getKeyValuePairs());
@@ -66,12 +68,23 @@ public class ViewController {
     }
 
     @PostMapping("/upload")
-    public String uploadDocument() {
+    public String uploadDocument(@RequestParam("uploadFile")MultipartFile file) {
         try {
-            URI uri = new URI("http://fileservice:8081/api/addDocument");
+            httpSearch.upload("http://localhost:8081/api/addDocument",file);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return "upload";
+    }
+
+    @GetMapping("/download")
+    public String downloadDocument(Model model, @RequestParam String id){
+        try{
+            URI uri = new URI("http:fileservice:8081/api/getDocument" + id);
+            HttpResponse<String> response = httpSearch.searchGet(uri);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return "index";
     }
 }

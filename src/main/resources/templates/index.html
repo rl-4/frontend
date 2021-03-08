@@ -2,35 +2,44 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link href="style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-    <h1>Document archive</h1>
+<h1>Document archive</h1>
+<a href="/upload">Upload Document</a>
 
-    <div th:each="key: ${keyValuePairs.keySet()}">
-        <span th:text="${key}"></span> : <span th:text="${keyValuePairs.get(key)}"></span>
-    </div>
-
+<div th:each="key: ${keyValuePairs.keySet()}">
+    <span th:text="${key}"></span> : <span th:text="${keyValuePairs.get(key)}"></span>
+</div>
+<div>
     <form action="#" th:action="@{/}" method="get">
         <input type="text" name="key" placeholder="Key">
         <input type="text" name="value" placeholder="Value">
         <button type="submit">Add Key-Value-Pair</button>
     </form>
+</div>
 
+<div>
     <form action="#" th:action="@{/search}" th:object="${searchForm}" method="post">
         <input type="text" th:field="*{searchQuery}" placeholder="Search">
         <input type="checkbox" th:field="*{regExMatch}" checked="false">
         <button type="submit">Search</button>
     </form>
+</div>
+<form method="post" enctype="multipart/form-data" action="http://localhost:8081/api/addDocument">
+    <input type="file" name="file">
+    <input type="submit">
+</form>
 
-    <div>
-        <div th:each="documentMetaData, stats : ${documentMetaDataDTOs}">
-            <p th:text="${documentMetaData.name}"></p>
-            <ul>
-                <li th:each="key: ${documentMetaData.metaData.keySet()}">
-                    <span th:text="${key}"></span> : <span th:text="${documentMetaData.metaData.get(key)}"></span>
-                </li>
-            </ul>
-        </div>
+<div>
+    <div th:each="documentMetaData, stats : ${documentMetaDataDTOs}">
+        <p th:text="${documentMetaData.name}"></p>
+        <ul>
+            <li th:each="key: ${documentMetaData.metaData.keySet()}">
+                <span th:text="${key}"></span> : <span th:text="${documentMetaData.metaData.get(key)}"></span>
+            </li>
+        </ul>
     </div>
+</div>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,12 +13,12 @@
 <body>
 <nav class="navbar navbar-light bg-light">
     <span class="navbar-brand mb-0 h1">Dateiupload</span>
-    <a href="/" class="float-right">Zurrück zur Übersicht</a>
+    <a href="/">Zurrück zur Übersicht</a>
 </nav>
-<form method="post" enctype="multipart/form-data">
+<form th:action="@{/upload}" method="post" enctype="multipart/form-data">
 
     <label>Wählen Sie die hochzuladenden Dateien (.xlsx, .docx, .txt) von Ihrem Rechner aus:
-        <input name="datei[]" type="file" accept=".xlsx, .docx, .txt" multiple>
+        <input name="uploadFile" type="file" accept=".xlsx, .docx, .txt" multiple>
     </label>
 
     <input name="categorys" list="categorys" type="text" placeholder="Kategorie">
