@@ -6,6 +6,10 @@
 <body>
     <h1>Document archive</h1>
 
+    <div th:each="key: ${keyValuePairs.keySet()}">
+        <span th:text="${key}"></span> : <span th:text="${keyValuePairs.get(key)}"></span>
+    </div>
+
     <form action="#" th:action="@{/}" method="get">
         <input type="text" name="key" placeholder="Key">
         <input type="text" name="value" placeholder="Value">
@@ -22,7 +26,7 @@
         <div th:each="documentMetaData, stats : ${documentMetaDataDTOs}">
             <p th:text="${documentMetaData.name}"></p>
             <ul>
-                <li th:each="key: documentMetaData.metaData.keySet()">
+                <li th:each="key: ${documentMetaData.metaData.keySet()}">
                     <span th:text="${key}"></span> : <span th:text="${documentMetaData.metaData.get(key)}"></span>
                 </li>
             </ul>

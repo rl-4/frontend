@@ -22,22 +22,21 @@ import java.util.Map;
 @Controller
 public class ViewController {
 
+    private static Map<String, String> keyValuePairs = new HashMap<>();
     private HttpSearch httpSearch = new HttpSearch();
-
     private Parser parser = new Parser();
 
     @PostMapping("/search")
     public String fullTextSearch(@ModelAttribute SearchForm searchForm, Model model) {
         List<DocumentMetaDataDto> documentMetaDataDTOs = null;
         try {
-            Map<String, String> keyValuePairs = new HashMap<>();
-            keyValuePairs.put("Category", "A");
-            FilterQuery filterQuery = new FilterQuery(searchForm.isRegExMatch(), searchForm.getSearchQuery(), keyValuePairs);
+            FilterQuery filterQuery = new FilterQuery(searchForm.isRegExMatch(), searchForm.getSearchQuery(), searchForm.getKeyValuePairs());
             String jsonFilterQuery = parser.filterQueryToJson(filterQuery);
 
             URI uri = new URI("http://app:8080/fullTextSearch");
             HttpResponse<String> response = httpSearch.searchPost(uri, jsonFilterQuery);
             String responseJson = response.body();
+            //TODO check if parser works
             DocumentMetaDataDtoWrapper documentMetaDataDtoWrapper = parser.jsonToDocumentMetaDataDto(responseJson);
             documentMetaDataDTOs = documentMetaDataDtoWrapper.getDocumentMetaDataDTOs();
         } catch (Exception e) {
@@ -49,21 +48,28 @@ public class ViewController {
 
     @GetMapping(value = {"/", "/index"})
     public String getIndex(Model model, @RequestParam(value = "key", required = false) String key, @RequestParam(value = "value", required = false) String value) {
+        if (key != null && value != null) {
+            keyValuePairs.put(key, value);
+        }
+
+        System.out.println(keyValuePairs);
         SearchForm searchForm = new SearchForm();
-        model.addAttribute(searchForm);
-        return "index";
+        searchForm.setKeyValuePairs(keyValuePairs);
+        model.addAttribute("searchForm", searchForm);
+        model.addAttribute("keyValuePairs", keyValuePairs);
+        return "index.html";
     }
 
     @GetMapping("/upload")
-    public String uploadForm(){
+    public String uploadForm() {
         return "upload";
     }
 
     @PostMapping("/upload")
-    public String uploadDocument(){
-        try{
+    public String uploadDocument() {
+        try {
             URI uri = new URI("http://fileservice:8081/api/addDocument");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "upload";
