@@ -5,6 +5,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,6 +59,7 @@ public class HttpSearch {
                             .uri(uri)
                             .timeout(Duration.ofMinutes(1))
                             .header("Accept", "application/json")
+                            .header("Content-Type", "application/json")
                             .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -100,7 +102,7 @@ public class HttpSearch {
         }
         return null;
     }
-    public ResponseEntity<String> upload(String url, MultipartFile file) throws IOException {
+    public ResponseEntity<String> upload(String url, MultipartFile file) throws HttpClientErrorException{
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, Object> body

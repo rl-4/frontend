@@ -8,8 +8,10 @@
 <h1>Document archive</h1>
 <a href="/upload">Upload Document</a>
 
+<div th:if="not ${#maps.isEmpty(keyValuePairs)}">
 <div th:each="key: ${keyValuePairs.keySet()}">
     <span th:text="${key}"></span> : <span th:text="${keyValuePairs.get(key)}"></span>
+</div>
 </div>
 <div>
     <form action="#" th:action="@{/}" method="get">
@@ -26,17 +28,15 @@
         <button type="submit">Search</button>
     </form>
 </div>
-<form method="post" enctype="multipart/form-data" action="http://localhost:8081/api/addDocument">
-    <input type="file" name="file">
-    <input type="submit">
-</form>
 
-<div>
-    <div th:each="documentMetaData, stats : ${documentMetaDataDTOs}">
+<div th:if="not ${#lists.isEmpty(documentMetaDataDtoList)}">
+    <div th:each="documentMetaData : ${documentMetaDataDtoList}">
         <p th:text="${documentMetaData.name}"></p>
         <ul>
+            <a th:href="@{http://localhost:8081/api/getDocument/(path=${documentMetaData.getPath()})}" target="_blank">Download</a>
             <li th:each="key: ${documentMetaData.metaData.keySet()}">
                 <span th:text="${key}"></span> : <span th:text="${documentMetaData.metaData.get(key)}"></span>
+
             </li>
         </ul>
     </div>

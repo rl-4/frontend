@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <title>Dateiupload</title>
+</head>
+<body>
+<nav class="navbar navbar-light bg-light">
+    <span class="navbar-brand mb-0 h1">Dateiupload</span>
+    <a href="/">Zurrück zur Übersicht</a>
+</nav>
+<div>
+    Upload failed! Please check your datatype!
+</div>
+<form th:action="@{/upload}" method="post" enctype="multipart/form-data">
+
+    <label>Wählen Sie die hochzuladenden Dateien (.xlsx, .docx, .txt) von Ihrem Rechner aus:
+        <input name="uploadFile" type="file" accept=".xlsx, .docx, .txt" multiple>
+    </label>
+
+    <input name="categorys" list="categorys" type="text" placeholder="Kategorie">
+    <datalist id="categorys">
+        <option value="Author"/>
+        <option value="Name"/>
+        <option value="Size"/>
+    </datalist>
+
+    <button>Hochladen</button>
+</form>
+</body>
+</html>
