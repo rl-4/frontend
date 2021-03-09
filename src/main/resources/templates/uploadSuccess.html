@@ -20,8 +20,8 @@
 </div>
 <form th:action="@{/upload}" method="post" enctype="multipart/form-data">
 
-    <label>Wählen Sie die hochzuladenden Dateien (.xlsx, .docx, .txt) von Ihrem Rechner aus:
-        <input name="uploadFile" type="file" accept=".xlsx, .docx, .txt" multiple>
+    <label>Wählen Sie die hochzuladenden Dateien (.xlsx, .docx) von Ihrem Rechner aus:
+        <input name="uploadFile" type="file" accept=".xlsx, .docx" multiple>
     </label>
 
     <input name="categorys" list="categorys" type="text" placeholder="Kategorie">
