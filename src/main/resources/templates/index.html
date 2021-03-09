@@ -34,7 +34,7 @@
 
 <div th:if="not ${#lists.isEmpty(documentMetaDataDtoList)}">
     <div th:each="documentMetaData : ${documentMetaDataDtoList}" align="center" style="margin-top: 8%">
-        <p th:text="${documentMetaData.name}"></p>
+        <p th:text="${documentMetaData.name}" align="center"></p>
         <ul align="center" style="list-style-type: none">
             <a th:href="@{http://localhost:8081/api/getDocument/(path=${documentMetaData.getPath()})}" target="_blank" align="center">Download</a>
             <li th:each="key: ${documentMetaData.metaData.keySet()}" align="center">

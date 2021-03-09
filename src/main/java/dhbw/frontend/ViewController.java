@@ -32,7 +32,7 @@ public class ViewController {
 
     @PostMapping("/search")
     public String fullTextSearch(@ModelAttribute SearchForm searchForm, Model model) {
-        keyValuePairs.clear();
+
         List<DocumentMetaDataDto> documentMetaDataDTOs = null;
         try {
             if(searchForm.getKeyValuePairs() == null){
@@ -55,6 +55,7 @@ public class ViewController {
             documentMetaDataDTOs = new ArrayList<>();
         }
         model.addAttribute(documentMetaDataDTOs);
+        keyValuePairs.clear();
         return "index";
     }
 
