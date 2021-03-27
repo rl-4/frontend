@@ -118,6 +118,23 @@ public class HttpSearch {
                 .exchange(url, HttpMethod.POST,requestEntity,String.class);
         return response;
     }
+    public ResponseEntity<String> uploadMetaData(String url, int id, String key, String value) throws HttpClientErrorException{
+        HttpHeaders headers = new HttpHeaders();
+        MultiValueMap<String, Object> body
+                = new LinkedMultiValueMap<>();
+        body.add("key",key);
+        body.add("value",value);
+        body.add("id",id);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity
+                = new HttpEntity<>(body, headers);
+
+        String serverUrl = url;
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate
+                .exchange(url, HttpMethod.POST,requestEntity,String.class);
+        return response;
+    }
     public static File convert(MultipartFile file)
     {
         File convFile = new File(file.getOriginalFilename());

@@ -8,27 +8,41 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
           integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
-    <title>Dateiupload</title>
+    <title>Upload</title>
 </head>
 <body>
 <nav class="navbar navbar-light bg-light">
-    <span class="navbar-brand mb-0 h1">Dateiupload</span>
-    <a href="/">Zurück zur Übersicht</a>
+    <span class="navbar-brand mb-0 h1">Upload</span>
+    <a href="/">Back to home</a>
 </nav>
+<div th:if="not ${uploadMessage == null}">
+<div th:text="${uploadMessage}" align="center">
+</div>
+</div>
+
+<div align = "center">
 <form th:action="@{/upload}" method="post" enctype="multipart/form-data">
 
-    <label>Wählen Sie die hochzuladenden Dateien (.xlsx, .docx) von Ihrem Rechner aus:
+    <label>Please choose the documents you want to upload (.xlsx, .docx) from your device:
         <input name="uploadFile" type="file" accept=".xlsx, .docx" multiple>
     </label>
+    <button>Upload</button>
 
-    <input name="categorys" list="categorys" type="text" placeholder="Kategorie">
-    <datalist id="categorys">
-        <option value="Author"/>
-        <option value="Name"/>
-        <option value="Size"/>
-    </datalist>
-
-    <button>Hochladen</button>
 </form>
+</div>
+
+<div th:if="not ${#maps.isEmpty(keyValuePairs)}">
+    <div th:each="key: ${keyValuePairs.keySet()}" align="center">
+        <span th:text="${key}"></span> : <span th:text="${keyValuePairs.get(key)}"></span>
+    </div>
+</div>
+<div align="center">
+<form action="#" th:action="@{/upload}" method="get">
+    <input type="text" name="key" placeholder="Key">
+    <input type="text" name="value" placeholder="Value">
+    <button type="submit">Add Key-Value-Pair</button>
+</form>
+</div>
+
 </body>
 </html>

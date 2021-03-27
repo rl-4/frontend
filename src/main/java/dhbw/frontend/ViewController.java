@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import services.HttpSearch;
 import view.SearchForm;
+import view.UploadForm;
 
 import java.net.URI;
 import java.net.http.HttpResponse;
@@ -26,7 +27,8 @@ import java.util.Map;
 @Controller
 public class ViewController {
 
-    private static Map<String, String> keyValuePairs = new HashMap<>();
+    private static Map<String, String> searchKeyValuePairs = new HashMap<>();
+    private static Map<String, String> uploadKeyValuePairs = new HashMap<>();
     private HttpSearch httpSearch = new HttpSearch();
     private Parser parser = new Parser();
 
@@ -40,7 +42,7 @@ public class ViewController {
             }
             FilterQuery filterQuery = new FilterQuery(searchForm.isRegExMatch(), searchForm.getSearchQuery(), searchForm.getKeyValuePairs());
             String jsonFilterQuery = parser.filterQueryToJson(filterQuery);
-
+            System.out.println(jsonFilterQuery);
             URI uri = new URI("http://app:8080/fullTextSearch");
             HttpResponse<String> response = httpSearch.searchPost(uri, jsonFilterQuery);
             String responseJson = response.body();
@@ -55,41 +57,63 @@ public class ViewController {
             documentMetaDataDTOs = new ArrayList<>();
         }
         model.addAttribute(documentMetaDataDTOs);
-        keyValuePairs.clear();
+        searchKeyValuePairs.clear();
         return "index";
     }
 
     @GetMapping(value = {"/", "/index"})
     public String getIndex(Model model, @RequestParam(value = "key", required = false) String key, @RequestParam(value = "value", required = false) String value) {
         if (key != null && value != null) {
-            keyValuePairs.put(key, value);
+            searchKeyValuePairs.put(key, value);
         }
 
-        System.out.println(keyValuePairs);
+        System.out.println(searchKeyValuePairs);
         SearchForm searchForm = new SearchForm();
-        searchForm.setKeyValuePairs(keyValuePairs);
+        searchForm.setKeyValuePairs(searchKeyValuePairs);
         model.addAttribute("searchForm", searchForm);
-        model.addAttribute("keyValuePairs", keyValuePairs);
+        model.addAttribute("keyValuePairs", searchKeyValuePairs);
         return "index";
     }
 
     @GetMapping("/upload")
-    public String uploadForm() {
+    public String uploadForm(Model model, @RequestParam(value = "key", required = false) String key, @RequestParam(value = "value", required = false) String value) {
+        if (key != null && value != null && !key.isEmpty() && !value.isEmpty()) {
+            uploadKeyValuePairs.put(key, value);
+        }
+
+        System.out.println(uploadKeyValuePairs);
+        UploadForm uploadForm = new UploadForm();
+        uploadForm.setKeyValuePairs(uploadKeyValuePairs);
+        model.addAttribute("uploadForm", uploadForm);
+        model.addAttribute("keyValuePairs", uploadKeyValuePairs);
         return "upload";
     }
 
     @PostMapping("/upload")
-    public String uploadDocument(@RequestParam("uploadFile")MultipartFile file) {
+    public String uploadDocument(@RequestParam("uploadFile")MultipartFile file, @ModelAttribute UploadForm uploadForm, Model model) {
         try {
             ResponseEntity<String> response =  httpSearch.upload("http://fileservice:8081/api/addDocument",file);
             HttpStatus status = response.getStatusCode();
+            System.out.println(response.getBody());
+            int id = Integer.parseInt(response.getBody().split("id\": ")[1].split("\n")[0]);
+            if( uploadKeyValuePairs != null && !uploadKeyValuePairs.isEmpty()){
+
+                for (Map.Entry<String,String> entry: uploadKeyValuePairs.entrySet()) {
+                    System.out.println("id:" + id +"key: " + entry.getKey() +"value: " + entry.getValue());
+                    httpSearch.uploadMetaData("http://fileservice:8081/api/addMetadata", id ,entry.getKey(), entry.getValue());
+                }
+            }
+            uploadKeyValuePairs.clear();
             if(status == HttpStatus.CREATED){
-                return "uploadSuccess";
+                model.addAttribute("uploadMessage","Upload successful !");
+                return "upload";
             }else{
-                return "uploadFailed";
+                model.addAttribute("uploadMessage","Upload failed !");
+                return "upload";
             }
         } catch (Exception e) {
-            return "uploadFailed";
+            model.addAttribute("uploadMessage","Upload failed !");
+            return "upload";
         }
     }
 }
