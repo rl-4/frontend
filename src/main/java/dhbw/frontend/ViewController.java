@@ -102,6 +102,7 @@ public class ViewController {
             }
         } catch (Exception e) {
             model.addAttribute("uploadMessage","Upload failed !");
+            uploadKeyValuePairs.clear();
             return "upload";
         }
     }
