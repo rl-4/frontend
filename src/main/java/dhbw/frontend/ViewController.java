@@ -34,22 +34,16 @@ public class ViewController {
 
     @PostMapping("/search")
     public String fullTextSearch(@ModelAttribute SearchForm searchForm, Model model) {
-
+        System.out.println(searchForm.getKeyValuePairs());
         List<DocumentMetaDataDto> documentMetaDataDTOs = null;
         try {
-            if(searchForm.getKeyValuePairs() == null){
-                searchForm.setKeyValuePairs(new HashMap<>());
-            }
-            FilterQuery filterQuery = new FilterQuery(searchForm.isRegExMatch(), searchForm.getSearchQuery(), searchForm.getKeyValuePairs());
+            FilterQuery filterQuery = new FilterQuery(searchForm.isRegExMatch(), searchForm.getSearchQuery(), searchKeyValuePairs);
             String jsonFilterQuery = parser.filterQueryToJson(filterQuery);
-            System.out.println(jsonFilterQuery);
             URI uri = new URI("http://app:8080/fullTextSearch");
             HttpResponse<String> response = httpSearch.searchPost(uri, jsonFilterQuery);
             String responseJson = response.body();
             responseJson = responseJson.replaceAll("\\[", "{\"documentMetaDataDTOs\":[");
             responseJson = responseJson.replaceAll("]", "]}");
-            System.out.println(responseJson);
-            //TODO check if parser works
             DocumentMetaDataDtoWrapper documentMetaDataDtoWrapper = parser.jsonToDocumentMetaDataDto(responseJson);
             documentMetaDataDTOs = documentMetaDataDtoWrapper.getDocumentMetaDataDTOs();
         } catch (Exception e) {
@@ -63,15 +57,14 @@ public class ViewController {
 
     @GetMapping(value = {"/", "/index"})
     public String getIndex(Model model, @RequestParam(value = "key", required = false) String key, @RequestParam(value = "value", required = false) String value) {
+        System.out.println("key: "+key+"value: "+value);
         if (key != null && value != null) {
             searchKeyValuePairs.put(key, value);
         }
 
-        System.out.println(searchKeyValuePairs);
         SearchForm searchForm = new SearchForm();
         searchForm.setKeyValuePairs(searchKeyValuePairs);
         model.addAttribute("searchForm", searchForm);
-        model.addAttribute("keyValuePairs", searchKeyValuePairs);
         return "index";
     }
 
@@ -80,8 +73,6 @@ public class ViewController {
         if (key != null && value != null && !key.isEmpty() && !value.isEmpty()) {
             uploadKeyValuePairs.put(key, value);
         }
-
-        System.out.println(uploadKeyValuePairs);
         UploadForm uploadForm = new UploadForm();
         uploadForm.setKeyValuePairs(uploadKeyValuePairs);
         model.addAttribute("uploadForm", uploadForm);
@@ -94,12 +85,10 @@ public class ViewController {
         try {
             ResponseEntity<String> response =  httpSearch.upload("http://fileservice:8081/api/addDocument",file);
             HttpStatus status = response.getStatusCode();
-            System.out.println(response.getBody());
             int id = Integer.parseInt(response.getBody().split("id\": ")[1].split("\n")[0]);
             if( uploadKeyValuePairs != null && !uploadKeyValuePairs.isEmpty()){
 
                 for (Map.Entry<String,String> entry: uploadKeyValuePairs.entrySet()) {
-                    System.out.println("id:" + id +"key: " + entry.getKey() +"value: " + entry.getValue());
                     httpSearch.uploadMetaData("http://fileservice:8081/api/addMetadata", id ,entry.getKey(), entry.getValue());
                 }
             }
