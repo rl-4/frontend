@@ -71,7 +71,9 @@ public class ViewController {
     @GetMapping("/upload")
     public String uploadForm(Model model, @RequestParam(value = "key", required = false) String key, @RequestParam(value = "value", required = false) String value) {
         if (key != null && value != null && !key.isEmpty() && !value.isEmpty()) {
-            uploadKeyValuePairs.put(key, value);
+            if(!uploadKeyValuePairs.containsKey(key) && !key.equals("Author")) {
+                uploadKeyValuePairs.put(key, value);
+            }
         }
         UploadForm uploadForm = new UploadForm();
         uploadForm.setKeyValuePairs(uploadKeyValuePairs);
